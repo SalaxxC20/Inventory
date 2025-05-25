@@ -1,6 +1,6 @@
 import { UsersRepository } from "../model/UsersRepository";
 import pool from "../../../db/DBConnection";
-import { Connection, Pool, QueryResult } from "pg";
+import { Connection, Pool, Query, QueryResult } from "pg";
 import { Users } from "../model/Users";
 
 type User = {
@@ -72,6 +72,79 @@ export class UsersService implements UsersRepository {
           }
         })
       })
+    return response;
+  }
+
+  async create(user: Users): Promise<Users | undefined> {
+      const response = new Promise<Users | undefined> ((resolve, reject) =>{
+      const query = "INSERT INTO users (name, email, password, token, verify, auth)";
+      this.connection.query<Users>(query, [user.Name, user.Email, user.Password, user.Token, user.Verify, user.Auth], (err, res)=>{
+        if(err){
+          reject(err);
+          return;
+        }
+        const user = res.rows[0]
+        if (user){
+          const result = new Users(
+            user.Id,
+            user.Name,
+            user.Email,
+            user.Password,
+            user.Token,
+            user.Verify,
+            user.Auth
+          )
+          resolve(result)
+        }
+        else {
+          resolve(undefined)
+        }
+      })
+      })
+    return response;
+  }
+  
+    async update(user: Users): Promise<Users | undefined> {
+      const response = new Promise<Users | undefined> ((resolve, reject)=>{
+        const query = "UPDATE users SET name = $1, email = $2, password = $3, token = $4, verify = $5, auth = $6 WHERE id = $7";
+        this.connection.query<Users>(query, [user.Id, user.Name, user.Email, user.Password, user.Token, user.Verify, user.Auth], (err, res) =>{
+          if(err){
+            reject(err)
+            return;
+          }
+          const user = res.rows[0]
+          if (user){
+            const result = new Users(
+              user.Id,
+              user.Name,
+              user.Email,
+              user.Password,
+              user.Token,
+              user.Verify,
+              user.Auth,
+            )
+            resolve(result)
+          }
+          else{
+            resolve(undefined)
+          }
+        })
+      })
+    return response;
+  }
+
+  async delete(id: string): Promise<number> {
+      const response = new Promise<number>((resolve, reject) =>{
+        const query = "DELETE FROM users WHERE id = $1"
+        this.connection.query(query, [id], (err, res)=>{
+          if(err){
+            reject(err)
+            return;
+          }
+          resolve(res.rowCount)
+        })
+      }) 
       return response;
   }
+  
 }
