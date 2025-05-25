@@ -45,4 +45,33 @@ export class UsersService implements UsersRepository {
     })
     return response;
   }
+
+  async getById(id: string): Promise<Users | undefined> {
+      const response = new Promise<Users | undefined>((resolve, reject ) =>{
+        const query = "SELECT * FROM users WHERE id = $1";
+        this.connection.query<User>(query,[id], (err, res)=>{
+          if (err){
+            reject(err);
+            return;
+          }
+          const user = res.rows[0]
+          if (user ){
+            const result = new Users(
+              user.id,
+              user.name,
+              user.email,
+              user.password,
+              user.token,
+              user.verify,
+              user.auth
+            )
+            resolve(result)
+          }
+          else{
+            resolve(undefined)
+          }
+        })
+      })
+      return response;
+  }
 }
