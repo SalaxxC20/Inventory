@@ -1,4 +1,5 @@
 import express from 'express';
+import { userRouter } from './models/users/router/UserRouter';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.post('/api/login', (req, res) => {
   }
 })
 
+app.use('/api/users',userRouter)
 
 app.listen(8000, "localhost", (err) => { /// Despues de ejecutar el servidor, valida si hay errores
   if (err) { /// Si hay errores, los imprime en la consola

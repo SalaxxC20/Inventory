@@ -29,7 +29,7 @@ export class UsersService implements UsersRepository {
          return;
         }
         const result = res.rows; /// Resive los resultados Siempre es un array
-        const users = result.map((user) => {
+        const users = result.map((user) => {  
           return new Users(
             user.id,
             user.name,
@@ -50,13 +50,13 @@ export class UsersService implements UsersRepository {
       const response = new Promise<Users | undefined>((resolve, reject ) =>{
         const query = "SELECT * FROM users WHERE id = $1";
         this.connection.query<User>(query,[id], (err, res)=>{
-          if (err){
+          if (err){// Si hay un error, lo rechaza
             reject(err);
             return;
           }
-          const user = res.rows[0]
-          if (user ){
-            const result = new Users(
+          const user = res.rows[0]// Obtiene el primer usuario del array de resultados
+          if (user ){// Si encuentra el usuario, lo devuelve
+            const result = new Users(// Crea un nuevo usuario con los datos obtenidos
               user.id,
               user.name,
               user.email,
@@ -65,10 +65,10 @@ export class UsersService implements UsersRepository {
               user.verify,
               user.auth
             )
-            resolve(result)
+            resolve(result)// Resuelve la promesa con el usuario encontrado
           }
           else{
-            resolve(undefined)
+            resolve(undefined)// Si no encuentra el usuario, devuelve undefined
           }
         })
       })
@@ -141,7 +141,8 @@ export class UsersService implements UsersRepository {
             reject(err)
             return;
           }
-          resolve(res.rowCount)
+          const rest = res.rows[0]
+          resolve(rest)
         })
       }) 
       return response;

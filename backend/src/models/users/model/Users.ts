@@ -1,13 +1,14 @@
+
 export class Users {
   Id: string;
   Name: string;
   Email: string;
   Password: string;
-  Token: string;
+  Token: string | null;
   Verify: boolean;
   Auth: boolean;
 
-  constructor(Id: string, Name: string, Email: string, Password: string, Token: string, Verify: boolean, Auth: boolean) {
+  constructor(Id: string, Name: string, Email: string, Password: string, Token: string | null, Verify: boolean, Auth: boolean) {
     this.Id = Id;
     this.Name = Name;
     this.Email = Email;
